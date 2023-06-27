@@ -1225,8 +1225,14 @@ void NativeWindowMac::ReplaceBrowserView(NativeBrowserView* viewToAdd,
 
     v1->TakeFallbackContentFrom(v2);
 
-    [[window_ contentView] replaceSubview:native_view_to_remove
-                                     with:native_view_to_add];
+    [[window_ contentView] addSubview:native_view_to_add
+                           positioned:NSWindowBelow
+                           relativeTo:native_view_to_remove];
+    [NSTimer scheduledTimerWithTimeInterval:0.1
+                                     target:native_view_to_remove
+                                   selector:@selector(removeFromSuperview)
+                                   userInfo:nil
+                                    repeats:NO];
   }
 
   remove_browser_view(viewToRemove);
