@@ -1609,6 +1609,10 @@ void NativeWindowMac::SelectNextTab() {
   [window_ selectNextTab:nil];
 }
 
+void NativeWindowMac::ShowAllTabs() {
+  [window_ ShowAllTabs:nil];
+}
+
 void NativeWindowMac::MergeAllWindows() {
   [window_ mergeAllWindows:nil];
 }

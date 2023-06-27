@@ -922,6 +922,10 @@ void BaseWindow::SelectNextTab() {
   window_->SelectNextTab();
 }
 
+void BaseWindow::ShowAllTabs() {
+  window_->ShowAllTabs();
+}
+
 void BaseWindow::MergeAllWindows() {
   window_->MergeAllWindows();
 }
@@ -1288,6 +1292,7 @@ void BaseWindow::BuildPrototype(v8::Isolate* isolate,
 #if BUILDFLAG(IS_MAC)
       .SetMethod("selectPreviousTab", &BaseWindow::SelectPreviousTab)
       .SetMethod("selectNextTab", &BaseWindow::SelectNextTab)
+      .SetMethod("ShowAllTabs", &BaseWindow::ShowAllTabs)
       .SetMethod("mergeAllWindows", &BaseWindow::MergeAllWindows)
       .SetMethod("moveTabToNewWindow", &BaseWindow::MoveTabToNewWindow)
       .SetMethod("toggleTabBar", &BaseWindow::ToggleTabBar)

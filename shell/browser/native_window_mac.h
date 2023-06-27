@@ -141,6 +141,7 @@ class NativeWindowMac : public NativeWindow,
   void SetEscapeTouchBarItem(gin_helper::PersistentDictionary item) override;
   void SelectPreviousTab() override;
   void SelectNextTab() override;
+  void ShowAllTabs() override;
   void MergeAllWindows() override;
   void MoveTabToNewWindow() override;
   void ToggleTabBar() override;
