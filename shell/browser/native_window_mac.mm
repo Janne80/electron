@@ -22,6 +22,7 @@
 #include "content/public/browser/browser_task_traits.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/desktop_media_id.h"
+#include "content/public/browser/render_widget_host_view.h"
 #include "shell/browser/browser.h"
 #include "shell/browser/javascript_environment.h"
 #include "shell/browser/native_browser_view_mac.h"
@@ -1196,13 +1197,10 @@ void NativeWindowMac::ReplaceBrowserView(NativeBrowserView* viewToAdd,
                                          NativeBrowserView* viewToRemove) {
   [CATransaction begin];
   [CATransaction setDisableActions:YES];
-
   if (!viewToAdd || !viewToRemove) {
     [CATransaction commit];
     return;
   }
-
-  // auto bounds = viewToRemove->GetBounds();
 
   add_browser_view(viewToAdd);
   auto* viewToAddInspectableWebContentsView =
@@ -1217,24 +1215,21 @@ void NativeWindowMac::ReplaceBrowserView(NativeBrowserView* viewToAdd,
     auto* native_view_to_remove =
         viewToRemoveInspectableWebContentsView->GetNativeView()
             .GetNativeNSView();
-    native_view_to_add.frame = native_view_to_remove.frame;
-    gfx::ScopedCocoaDisableScreenUpdates disabler;
-    [[window_ contentView] addSubview:native_view_to_add
-                           positioned:NSWindowBelow
-                           relativeTo:native_view_to_remove];
-    // viewToAdd->SetBounds(bounds);
-    //            [NSTimer scheduledTimerWithTimeInterval:0.1
-    //                                             target:native_view_to_remove
-    //                                           selector:@selector(removeFromSuperview)
-    //                                           userInfo:nil
-    //                                            repeats:NO];
-    [native_view_to_remove removeFromSuperview];
-    native_view_to_add.hidden = NO;
-    //[native_view_to_remove removeFromSuperview];
-    remove_browser_view(viewToRemove);
-    gfx::ScopedCocoaDisableScreenUpdates enabler;
+
+    auto* v1 = viewToAdd->GetInspectableWebContents()
+                   ->GetWebContents()
+                   ->GetRenderWidgetHostView();
+    auto* v2 = viewToRemove->GetInspectableWebContents()
+                   ->GetWebContents()
+                   ->GetRenderWidgetHostView();
+
+    v1->TakeFallbackContentFrom(v2);
+
+    [[window_ contentView] replaceSubview:native_view_to_remove
+                                     with:native_view_to_add];
   }
 
+  remove_browser_view(viewToRemove);
   [CATransaction commit];
 }
 
